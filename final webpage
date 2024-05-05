@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Parking System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        /* Your original CSS styles go here */
+        body {
+            background: linear-gradient(to right,#84ceeb,#8860d0);
+            font-family: Arial, sans-serif;
+            color: black;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: fadeIn 2s;
+        }
+        .slot {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: all 0.3s ease-in-out;
+            animation: slideIn 2s;
+        }
+        .slot:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        #aboutSection {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            animation: slideIn 2s;
+        }
+        .btn-success {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+            animation: fadeIn 2s;
+        }
+        .btn-success:hover {
+            background-color: #45a049;
+        }
+        .container {
+            max-width: 960px;
+            margin: auto;
+        }
+        .slot {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+        @keyframes slideIn {
+            from {transform: translateY(-50px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+        @media only screen and (max-width: 600px) {
+        #aboutSection {
+            padding: 1rem;
+        }
+        #aboutSection h2, #aboutSection p, #aboutSection h3 {
+            font-size: 1rem;
+        }
+        #aboutSection ul {
+            flex-direction: column;
+            align-items: center;
+        }
+        #aboutSection ul li {
+            margin-bottom: 10px;
+            text-align: center; /* Add this line */
+        }
+    }
+    #aboutSection ul li {
+        list-style-type: disc;
+        margin-left: 20px;
+        text-align: center;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Car Parking System</h1>
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="slot" id="slot1">Slot 1: </div>
+                <div class="slot" id="slot2">Slot 2: </div>
+                <div class="slot" id="slot3">Slot 3: </div>
+                <div class="slot" id="slot4">Slot 4: </div>
+                <div class="slot" id="slot5">Slot 5: </div>
+                <div class="slot" id="slot6">Slot 6: </div>
+                <div class="slot" id="available">Slots Available: </div>
+            </div>
+        </div>
+        <button class="btn btn-success mt-3" id="about" onclick="showAbout()">About Us</button>
+        <div id="aboutSection" style="margin-top: 3rem; background-color: #f9f9f9; padding: 2rem; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.15);">
+    <h2 style="color: #2c3e50; text-align: center;">About Us</h2>
+    <hr>
+    <p style="font-size: 1.2rem; text-align: center;">This project was created and executed by the students of:</p>
+    <h3 style="font-weight: bold; text-align: center; color: #2980b9;">CSMSS's Chhatrapati Shahu College of Engineering, Chhatrapati Sambhajinagar(A.bad)</h3>
+    <p style="font-size: 1.2rem; text-align: center; margin-top: 2rem;">Members:</p>
+    <ul style="font-size: 1.2rem;">
+        <li>Sarthak Dayma</li>
+        <li>Prashik Dehere</li>
+        <li>Ajay Gaware</li>
+        <li>Pushpak Jaiswal</li>
+        <li>Ritesh Kakde</li>
+    </ul>
+</div>
+    </div>
+
+    <script>
+        function showAbout() {
+            var aboutSection = document.getElementById("aboutSection");
+            if (aboutSection.style.display === "none") {
+                aboutSection.style.display = "block";
+            } else {
+                aboutSection.style.display = "none";
+            }
+        }
+
+        // Fetch data from Blynk server
+        function fetchData() {
+            fetch('https://blr1.blynk.cloud/external/api/get?token=3bgeF2MkmryyR6kj07RrfbuahDM0DNPg&v1')
+                .then(response => response.json())
+                .then(data => {
+                    // Update parking slots status based on received data
+                    var slots = data[0].split(",");
+                    for (var i = 0; i < slots.length; i++) {
+                        document.getElementById("slot" + (i + 1)).textContent = "Slot " + (i + 1) + ": " + slots[i];
+                    }
+
+                    // Update number of available slots
+                    var available = slots.filter(function(slot) { return slot === "Empty"; }).length;
+                    document.getElementById("available").textContent = "Slots Available: " + available;
+                });
+        }
+
+        // Call fetchData function every 5 seconds (5000 milliseconds)
+        setInterval(fetchData, 5000);
+    </script>
+</body>
+</html>
