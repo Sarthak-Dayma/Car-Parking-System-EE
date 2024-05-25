@@ -148,7 +148,7 @@
 
         // Fetch data from Blynk server
         function fetchData() {
-            fetch('http://blynk-cloud.com/YourAuthToken/get/V1')
+            fetch('https://blr1.blynk.cloud/external/api/get?token=3bgeF2MkmryyR6kj07RrfbuahDM0DNPg&v1')
                 .then(response => response.json())
                 .then(data => {
                     // Update parking slots status based on received data
